@@ -5,8 +5,8 @@ namespace StreamingApp.Server.Data
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserContext _context;
-        public UserRepository(UserContext context) 
+        private readonly StreamingContext _context;
+        public UserRepository(StreamingContext context) 
         {
             _context = context;
         }

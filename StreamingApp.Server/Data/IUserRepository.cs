@@ -6,5 +6,6 @@ namespace StreamingApp.Server.Data
         User Create(User user);
         User GetByEmail(string email);
         User GetById(int id);
+
     }
 }

@@ -1,40 +1,30 @@
 import NavbarComponent from "../components/NavbarComponent";
-import {Route,Routes } from "react-router-dom"
-import { useState, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import { useState, useEffect, createContext } from "react";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
+import Profile from "../pages/Profile";
+import "./App.css";
+import { Container } from "react-bootstrap";
+import Upload from "../pages/Upload";
+export const UserContext = createContext();
 function App() {
-    const [email, setEmail] = useState('');
-    useEffect(() => {
-        (
-            async () => {
-            const response = await fetch('http://localhost:5011/api/user', {
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-            });
-            const content = await response.json();
-            setEmail(content.email);
-    }
-    )();
-        
-    
-    }, []);
-
-    return (
-        <>
-            <NavbarComponent email={email} setEmail={setEmail}/>
-            <>
-                <Routes>
-                    <Route path="/" element={<Home email={email} />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login setEmail = {setEmail} />} />
-                </Routes>
-            </>
-        </>
-    );
-    
-   
+  const [userData, setUserData] = useState();
+  return (
+    <UserContext.Provider value={userData}>
+      <NavbarComponent setUserData={setUserData} />
+      <Container style={{ height: "90vh" }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login setUserData={setUserData} />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/upload" element={<Upload />} />
+        </Routes>
+      </Container>
+    </UserContext.Provider>
+  );
 }
 
 export default App;

@@ -23,7 +23,8 @@ namespace StreamingApp.Server.Controllers
             var user = new User
             {
                 Email = dto.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Name = dto.Name,
             };          
             return Created("success", _repository.Create(user));
         }

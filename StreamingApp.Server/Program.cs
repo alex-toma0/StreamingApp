@@ -23,9 +23,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.SameSite = SameSiteMode.None;
 });
-builder.Services.AddDbContext<UserContext>(opt => opt.UseSqlite("Data Source=C:\\Users\\alext\\Documents\\Projects\\Databases\\streamingdb.sqlite"));
+builder.Services.AddDbContext<StreamingContext>(opt => opt.UseSqlite("Data Source=C:\\Users\\alext\\Documents\\Projects\\Databases\\streamingdb.sqlite"));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();

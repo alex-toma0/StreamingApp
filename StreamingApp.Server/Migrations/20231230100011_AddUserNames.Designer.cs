@@ -10,13 +10,39 @@ using StreamingApp.Server.Data;
 namespace StreamingApp.Server.Migrations
 {
     [DbContext(typeof(StreamingContext))]
-    [Migration("20231227145555_CreateUsersTable")]
-    partial class CreateUsersTable
+    [Migration("20231230100011_AddUserNames")]
+    partial class AddUserNames
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
+
+            modelBuilder.Entity("StreamingApp.Server.Models.Song", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
+
+                    b.ToTable("Songs");
+                });
 
             modelBuilder.Entity("StreamingApp.Server.Models.User", b =>
                 {
@@ -25,6 +51,10 @@ namespace StreamingApp.Server.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StreamingApp.Server.Data;
 
@@ -10,9 +11,10 @@ using StreamingApp.Server.Data;
 namespace StreamingApp.Server.Migrations
 {
     [DbContext(typeof(StreamingContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20231230102555_AddAlbums")]
+    partial class AddAlbums
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
@@ -35,15 +37,10 @@ namespace StreamingApp.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Albums");
                 });
@@ -61,10 +58,6 @@ namespace StreamingApp.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -73,17 +66,12 @@ namespace StreamingApp.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
 
                     b.HasIndex("Title")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Songs");
                 });
@@ -114,39 +102,17 @@ namespace StreamingApp.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("StreamingApp.Server.Models.Album", b =>
-                {
-                    b.HasOne("StreamingApp.Server.Models.User", null)
-                        .WithMany("Albums")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("StreamingApp.Server.Models.Song", b =>
                 {
                     b.HasOne("StreamingApp.Server.Models.Album", "Album")
                         .WithMany("Songs")
                         .HasForeignKey("AlbumId");
 
-                    b.HasOne("StreamingApp.Server.Models.User", "User")
-                        .WithMany("Songs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Album");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StreamingApp.Server.Models.Album", b =>
                 {
-                    b.Navigation("Songs");
-                });
-
-            modelBuilder.Entity("StreamingApp.Server.Models.User", b =>
-                {
-                    b.Navigation("Albums");
-
                     b.Navigation("Songs");
                 });
 #pragma warning restore 612, 618
