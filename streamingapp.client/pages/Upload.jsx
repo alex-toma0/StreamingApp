@@ -1,48 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Container, Form, Button } from "react-bootstrap";
 const Upload = () => {
   const [title, setTitle] = useState("");
-  const [filePath, setFilePath] = useState("");
   const [imagePath, setImagePath] = useState("");
-  const [genre, setGenre] = useState("");
+  const [genreId, setGenreId] = useState("");
+  const [file, setFile] = useState();
+  const [genres, setGenres] = useState();
   const location = useLocation();
   let userId = location.state.userId;
 
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const response = await fetch("http://localhost:5011/api/songs/getGenres");
+      const json = await response.json();
+      setGenres(json);
+    };
+    fetchGenres();
+  }, []);
   const handleSumbit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("imagePath", imagePath);
+    formData.append("genreId", genreId);
+    formData.append("userId", userId);
+    formData.append("audioFile", file);
+
     console.log(userId);
-    await fetch("http://localhost:5011/api/uploadSong", {
+    console.log(formData);
+    await fetch("http://localhost:5011/api/songs/uploadSong", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        filePath,
-        imagePath,
-        genre,
-        userId,
-      }),
+      body: formData,
     });
   };
 
   return (
     <Container className="h-100 d-flex align-items-center justify-content-center">
-      <Form onSubmit={handleSumbit}>
+      <Form encType="multipart/form-data" onSubmit={handleSumbit}>
         <Form.Group className="mb-3" controlId="formSongTitle">
           <Form.Label>Song Title</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter the title"
             onChange={(e) => setTitle(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formFilePath">
-          <Form.Label>File Path</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter the file path"
-            onChange={(e) => setFilePath(e.target.value)}
           />
         </Form.Group>
 
@@ -57,10 +58,27 @@ const Upload = () => {
 
         <Form.Group className="mb-3" controlId="formGenre">
           <Form.Label>Genre</Form.Label>
-          <Form.Control
-            type="text"
+          <Form.Select
+            type="datalist"
             placeholder="Enter the genre"
-            onChange={(e) => setGenre(e.target.value)}
+            onChange={(e) => setGenreId(e.target.value)}
+          >
+            {genres?.map((genre) => {
+              return (
+                <option key={genre.id} value={genre.id}>
+                  {genre.name}
+                </option>
+              );
+            })}
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formFile">
+          <Form.Label>Choose song</Form.Label>
+          <Form.Control
+            type="file"
+            placeholder="Choose the file"
+            onChange={(e) => setFile(e.target.files[0])}
           />
         </Form.Group>
 

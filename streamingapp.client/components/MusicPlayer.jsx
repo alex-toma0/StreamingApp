@@ -6,6 +6,7 @@ const MusicPlayer = ({ playList }) => {
   return (
     <AudioPlayer
       playList={playList}
+      placement={{ player: "bottom" }}
       activeUI={{
         ...activeUI,
         progress: progressType,

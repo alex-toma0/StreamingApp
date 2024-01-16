@@ -14,7 +14,7 @@ function App() {
   return (
     <UserContext.Provider value={userData}>
       <NavbarComponent setUserData={setUserData} />
-      <Container style={{ height: "90vh" }}>
+      <div style={{ height: "100vh" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
@@ -22,7 +22,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
         </Routes>
-      </Container>
+      </div>
     </UserContext.Provider>
   );
 }
