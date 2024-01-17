@@ -23,7 +23,10 @@ namespace StreamingApp.Server.Controllers
         [HttpPost("uploadSong")]
         public IActionResult UploadSong([FromForm] SongDto dto)
         {
-
+            if (dto == null)
+            {
+                return BadRequest(new { message = "Couldn't upload song" });
+            }
             
             var fileName = dto.AudioFile.FileName;
             var filePath = Path.Combine(@"C:\Users\alext\Documents\StreamingAppSongs", fileName);
