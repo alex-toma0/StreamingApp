@@ -2,7 +2,9 @@ import { Button, Form, Container } from "react-bootstrap";
 
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+
 const Register = () => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirm] = useState("");
@@ -11,8 +13,17 @@ const Register = () => {
 
   const handleSumbit = async (e) => {
     e.preventDefault();
-    if (confirmPassword === password) {
-      await fetch("http://localhost:5011/api/register", {
+
+    if (!(confirmPassword != "" && password != "" && email != "" && name != "")) {
+      alert("Invalid credentials!")
+    }
+    
+    else if (confirmPassword != password) {
+      alert("Passwords don't match!")
+    }
+
+    else {
+      const valid = await fetch("http://localhost:5011/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -22,8 +33,17 @@ const Register = () => {
         }),
       });
 
+      console.log(valid.ok)
+
+      if (valid.ok == false) {
+        
+        alert("User already exists!")
+        return
+      }
       setRedirect(true);
+      console.log()
     }
+    
   };
 
   if (redirect) {
