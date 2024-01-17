@@ -9,8 +9,11 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+
     await fetch("http://localhost:5011/api/login", {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -18,12 +21,19 @@ const Login = (props) => {
         email,
         password,
       }),
-    });
+    }); 
+
 
     const response = await fetch("http://localhost:5011/api/user", {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
+
+    if (response.ok == false) {
+      alert("Invalid credentials")
+      return
+
+    }
 
     const content = await response.json();
     props.setUserData(content);
