@@ -36,6 +36,7 @@ const SongCard = ({
     await fetch(`http://localhost:5011/api/songs/deleteSong/${songId}`, {
       method: "DELETE",
     });
+    alert("The song was succesfully deleted!");
   };
   return (
     <Card className="mb-5" style={{ width: "16rem" }}>
