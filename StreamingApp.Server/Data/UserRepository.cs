@@ -1,4 +1,4 @@
-﻿using SQLitePCL;
+using SQLitePCL;
 using StreamingApp.Server.Models;
 
 namespace StreamingApp.Server.Data
@@ -12,9 +12,17 @@ namespace StreamingApp.Server.Data
         }
         public User Create(User user)
         {
-            _context.Users.Add(user);
-            user.Id = _context.SaveChanges();
-            return user;
+            try
+            {
+                _context.Users.Add(user);
+                user.Id = _context.SaveChanges();
+                return user;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return user;
+            }
         }
 
         public User GetByEmail(string email) 
