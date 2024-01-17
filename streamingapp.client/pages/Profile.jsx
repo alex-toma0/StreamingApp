@@ -11,7 +11,9 @@ const Profile = () => {
   const userData = useContext(UserContext);
   const navigate = useNavigate();
   const [topGenres, setTopGenres] = useState();
+  const [userRole, setUserRole] = useState();
   const [chartData, setChartData] = useState();
+  const [uploadCount, setUploadCount] = useState();
 
   function getRandomColor() {
     const red = Math.floor(Math.random() * 256);
@@ -53,9 +55,73 @@ const Profile = () => {
       setTopGenres(json);
       setChartData(data);
     };
+    const fetchRole = async () => {
+      const response = await fetch("http://localhost:5011/api/getRole", {
+        method: "POST",
+        body: JSON.stringify({ userId: userData.id }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+      setUserRole(json[0].roleName);
+    };
+
+    const fetchStats = async () => {
+      const response = await fetch("http://localhost:5011/api/songs/getStats", {
+        method: "POST",
+        body: JSON.stringify({ userId: userData.id }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+      setUploadCount(json);
+    };
+
     fetchTopGenres();
+    fetchRole();
+    fetchStats();
   }, [userData]);
 
+  const badge = () => {
+    if (uploadCount >= 0 && uploadCount <= 5)
+      return (
+        <img
+          width="250em"
+          height="250em"
+          src="https://raw.githubusercontent.com/alex-toma0/images/main/bronze-badge.png"
+        ></img>
+      );
+    else if (uploadCount >= 6 && uploadCount <= 20)
+      return (
+        <img
+          width="250em"
+          height="250em"
+          src="https://raw.githubusercontent.com/alex-toma0/images/main/silver-badge.png"
+        ></img>
+      );
+    else if (uploadCount >= 21 && uploadCount <= 34)
+      return (
+        <img
+          width="250em"
+          height="250em"
+          src="https://raw.githubusercontent.com/alex-toma0/images/main/gold-badge.png"
+        ></img>
+      );
+    else if (uploadCount >= 35)
+      return (
+        <img
+          width="250em"
+          height="250em"
+          src="https://raw.githubusercontent.com/alex-toma0/images/main/diamond-badge.png"
+        ></img>
+      );
+  };
   return (
     <>
       {userData && (
@@ -69,24 +135,30 @@ const Profile = () => {
               height="100em"
             ></Card.Img>
             <Card.Title className="mb-2">{userData.name}</Card.Title>
-            <Button
-              className="mb-2"
-              as={Link}
-              to="/upload"
-              onClick={(e) => {
-                e.preventDefault();
-                console.log(topGenres);
-                navigate("/upload", {
-                  state: {
-                    userId: userData.id,
-                  },
-                });
-              }}
-            >
-              Upload song
-            </Button>
+            {userRole === "Artist" && (
+              <Button
+                className="mb-2"
+                as={Link}
+                to="/upload"
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log(topGenres);
+                  navigate("/upload", {
+                    state: {
+                      userId: userData.id,
+                    },
+                  });
+                }}
+              >
+                Upload song
+              </Button>
+            )}
           </Card>
-          <div className="w-10">{topGenres && <Pie data={chartData} />}</div>
+          <div className="w-2 ">{topGenres && <Pie data={chartData} />}</div>
+          <div className="w-2 d-flex flex-column justify-content-center align-items-center">
+            {badge()}
+            Number of songs: {uploadCount}
+          </div>
         </Container>
       )}
     </>

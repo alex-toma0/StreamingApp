@@ -10,6 +10,7 @@ const Home = () => {
   const [songs, setSongs] = useState();
   const [genres, setGenres] = useState();
   const [displayGenre, setDisplayGenre] = useState();
+  const [userRole, setUserRole] = useState();
   const [playSong, setPlaying] = useState("");
   const userData = useContext(UserContext);
 
@@ -24,8 +25,23 @@ const Home = () => {
       const json = await response.json();
       setGenres(json);
     };
-    fetchGenres();
-    fetchSongs();
+    const fetchRole = async () => {
+      const response = await fetch("http://localhost:5011/api/getRole", {
+        method: "POST",
+        body: JSON.stringify({ userId: userData.id }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      setUserRole(json[0].roleName);
+    };
+    if (userData) {
+      fetchGenres();
+      fetchSongs();
+      fetchRole();
+    }
   }, [displayGenre]);
 
   const addToQueue = (title, img, src, artist) => {
@@ -82,6 +98,7 @@ const Home = () => {
                     artist={song.artistName}
                     genre={song.genreName}
                     addToQueue={addToQueue}
+                    role={userRole}
                   />
                 </Col>
               );

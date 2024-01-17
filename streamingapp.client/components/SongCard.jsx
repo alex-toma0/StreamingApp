@@ -8,6 +8,7 @@ const SongCard = ({
   artist,
   genre,
   addToQueue,
+  role,
 }) => {
   const basePath = "http://localhost:5011/api/songs/stream/";
 
@@ -29,6 +30,13 @@ const SongCard = ({
       },
     });
   };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    await fetch(`http://localhost:5011/api/songs/deleteSong/${songId}`, {
+      method: "DELETE",
+    });
+  };
   return (
     <Card className="mb-5" style={{ width: "16rem" }}>
       <Card.Img variant="top" src={imagePath} />
@@ -39,6 +47,11 @@ const SongCard = ({
         <Button variant="primary" onClick={(e) => handlePlay(e)}>
           Play
         </Button>
+        {role === "Moderator" && (
+          <Button variant="danger" onClick={(e) => handleDelete(e)}>
+            Delete
+          </Button>
+        )}
       </Card.Body>
     </Card>
   );

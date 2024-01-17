@@ -101,6 +101,17 @@ namespace StreamingApp.Server.Controllers
             return Ok(loggedSong);
         }
 
+        [HttpDelete("deleteSong/{songId}")]
+        public IActionResult DeleteSong(int songId) 
+        {
+            var song = _repository.GetById(songId);
+            if (song == null) return NotFound();
+
+            _context.Songs.Remove(song);
+            _context.SaveChanges();
+            return NoContent();
+        }
+
         [HttpPost("getTopGenres")]
         public IActionResult GetTopGenres(UserIdDto dto)
         {
@@ -124,6 +135,15 @@ namespace StreamingApp.Server.Controllers
 
             return Ok(topGenresForUser);
             
+        }
+
+        [HttpPost("getStats")]
+        public IActionResult GetStats(UserIdDto dto)
+        {
+            var uploadCount = (from song in _context.Songs
+                                   where song.UserId == dto.UserId
+                                   select song).Count();
+            return Ok(uploadCount);
         }
     }
    }

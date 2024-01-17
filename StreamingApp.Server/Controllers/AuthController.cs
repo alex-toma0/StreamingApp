@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StreamingApp.Server.Data;
 using StreamingApp.Server.Dtos;
 using StreamingApp.Server.Helpers;
 using StreamingApp.Server.Models;
+using System.Reflection.Metadata.Ecma335;
 
 namespace StreamingApp.Server.Controllers
 {
@@ -12,10 +14,12 @@ namespace StreamingApp.Server.Controllers
     {
         private readonly IUserRepository _repository;
         private readonly JwtService _jwtService;
-        public AuthController(IUserRepository repository, JwtService jwtService)
+        private readonly StreamingContext _context;
+        public AuthController(IUserRepository repository, JwtService jwtService, StreamingContext context)
         {
             _repository = repository;
             _jwtService = jwtService;
+            _context = context;
         }
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
@@ -91,6 +95,20 @@ namespace StreamingApp.Server.Controllers
             {
                 message = "success"
             });
+        }
+        [HttpPost("getRole")]
+        public IActionResult GetRole([FromBody] UserIdDto dto)
+        {
+            var roles = from role in _context.Roles
+                       join userRole in _context.UserRoles on role.Id equals userRole.RoleId
+                       join user in _context.Users on userRole.UserId equals user.Id
+                       where userRole.UserId == dto.UserId
+                       select new
+                       {
+                           RoleId = role.Id,
+                           RoleName = role.Name,
+                       };
+            return Ok(roles.ToList());
         }
     }
 
