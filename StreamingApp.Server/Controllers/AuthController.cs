@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using StreamingApp.Server.Data;
 using StreamingApp.Server.Dtos;
 using StreamingApp.Server.Helpers;
@@ -20,12 +20,22 @@ namespace StreamingApp.Server.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
         {
-            var user = new User
+            var exists = _repository.GetByEmail(dto.Email);
+
+            if (exists != null)
+            {
+                Console.WriteLine(exists.Email);
+                return BadRequest(new { message = "User already exists" });
+            }
+
+            
+                var user = new User
             {
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Name = dto.Name,
-            };          
+            };   
+            
             return Created("success", _repository.Create(user));
         }
         [HttpPost("login")]
