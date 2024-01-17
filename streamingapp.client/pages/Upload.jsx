@@ -20,6 +20,8 @@ const Upload = () => {
   }, []);
   const handleSumbit = async (e) => {
     e.preventDefault();
+
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("imagePath", imagePath);
@@ -29,11 +31,22 @@ const Upload = () => {
 
     console.log(userId);
     console.log(formData);
-    await fetch("http://localhost:5011/api/songs/uploadSong", {
+
+    const valid = await fetch("http://localhost:5011/api/songs/uploadSong", {
       method: "POST",
       body: formData,
     });
+
+    
+  if (valid.ok == false) {
+    alert("Song upload error!")
+    return
+  }
+
+  alert("Song uploaded successfully!")
+
   };
+
 
   return (
     <Container className="h-100 d-flex align-items-center justify-content-center">
